@@ -1,0 +1,16 @@
+[theme]
+base = "light"
+primaryColor = "#2f6fe4"
+backgroundColor = "#f4f6f9"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#1a2233"
+
+[server]
+# headless=false 이면 Streamlit 이 최초 실행 시 콘솔에서 이메일 입력을 기다리며 멈춘다.
+# 배치 파일로 더블클릭 실행할 때 서버가 뜨지 않는 원인이므로 반드시 true 로 둔다.
+# 대신 브라우저는 run.bat 이 직접 연다.
+headless = true
+maxUploadSize = 50
+
+[browser]
+gatherUsageStats = false
