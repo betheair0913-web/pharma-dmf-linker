@@ -250,3 +250,50 @@ pharma-dmf-linker/
 - 포털에서 429/5xx가 잦으면 `core/config.py`의 `MAX_CONCURRENCY`를 낮추세요.
 - 인증키는 `data/dmf_linker.db`의 `app_setting` 테이블 또는 `.env`에만 보관되며,
   식약처 API 외부로 전송되지 않습니다.
+
+---
+
+## Vercel 배포 (web/)
+
+Streamlit 앱은 Vercel 에서 돌지 않습니다. 세션마다 WebSocket 을 유지하는 상주 서버이고,
+59MB SQLite 파일에 쓰며, 4분짜리 수집 작업을 돌리기 때문입니다. Vercel 은 요청마다
+떴다 사라지는 서버리스 함수만 실행합니다. 그래서 **조회 화면만 Next.js 로 다시 만들어**
+`web/` 에 두고, 데이터는 Neon Postgres 에서 읽습니다.
+
+| | 로컬 Streamlit (`app.py`) | Vercel (`web/`) |
+|---|---|---|
+| 데이터 수집·정규화 | ○ 담당 | × (읽기 전용) |
+| 상세 조회 / 종합 현황 / 변경 이력 | ○ | ○ |
+| CSV 내보내기 | ○ | ○ (`/api/export`) |
+| 저장소 | 로컬 SQLite | Neon Postgres |
+
+수집은 계속 사내 PC 의 Streamlit 앱이 담당하고, 그 결과만 Postgres 로 밀어 올립니다.
+
+### 배포 절차
+
+```bash
+# 1) Neon Postgres 연결 (최초 1회, 브라우저에서 약관 동의 필요)
+cd web && vercel integration add neon
+
+# 2) 연결 정보 내려받기
+vercel env pull .env.local
+
+# 3) 로컬 수집 결과를 Postgres 로 적재 (약 15만 행)
+cd .. && pip install "psycopg[binary]"
+python scripts/push_to_postgres.py
+
+# 4) 배포
+cd web && vercel deploy --prod
+```
+
+수집을 새로 돌린 뒤에는 3번만 다시 실행하면 배포본에 반영됩니다
+(스키마를 건드리지 않으려면 `--skip-schema`).
+
+### 알아둘 점
+
+- Vercel 프로젝트의 **Root Directory 는 `web`** 입니다. GitHub 자동 배포를 연결한다면
+  프로젝트 설정에서 Root Directory 를 `web` 으로 지정해야 합니다.
+- 배포본에는 **데이터 동기화 화면이 없습니다.** 인증키를 클라우드에 두지 않기 위한
+  선택이며, 수집은 로컬에서만 실행합니다.
+- 기본적으로 Vercel **Deployment Protection** 이 켜져 있어 배포 URL 은 팀 구성원만
+  열 수 있습니다. 사내에 공유하려면 Vercel 프로젝트 설정에서 보호를 조정하세요.
