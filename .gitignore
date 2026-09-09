@@ -6,3 +6,10 @@ exports/*.csv
 __pycache__/
 *.pyc
 .streamlit/secrets.toml
+
+# Next.js / Vercel
+web/node_modules/
+web/.next/
+web/.env*.local
+.vercel
+web/.vercel

@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* Streamlit 판과 같은 색을 쓴다: 밝은 본문 + 다크 네이비 사이드바 */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --text: #1a2233;
+  --muted: #6b7686;
+  --line: #e3e8ef;
+  --primary: #2f6fe4;
+  --sidebar: #1b2537;
+  --sidebar-line: #2b364c;
+  --sidebar-text: #c7cedb;
+  --sidebar-muted: #8b94a6;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-line: var(--sidebar-line);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --font-sans: var(--font-geist-sans);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-geist-sans), "Malgun Gothic", "맑은 고딕", system-ui,
+    sans-serif;
+  font-size: 14px;
+}
+
+/* 사이드바 안 입력 위젯 */
+.sb-label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--sidebar-muted);
+  margin-bottom: 0.25rem;
+}
+.sb-input,
+.sb-select {
+  width: 100%;
+  background: #131b29;
+  border: 1px solid var(--sidebar-line);
+  border-radius: 8px;
+  color: #eef2f8;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.82rem;
+}
+.sb-input::placeholder {
+  color: #6f7c92;
+}
+.sb-input:focus,
+.sb-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+.sb-section {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #eef2f8;
+  margin: 1.1rem 0 0.5rem;
+}
+
+/* 결과 그리드 */
+.grid-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.79rem;
+  white-space: nowrap;
+}
+.grid-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f7f9fc;
+  color: #55617a;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--line);
+}
+.grid-table td {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid #f0f3f7;
+  max-width: 22rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grid-table tbody tr:hover td {
+  background: #f7faff;
+}
