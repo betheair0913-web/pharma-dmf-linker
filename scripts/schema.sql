@@ -23,8 +23,10 @@ CREATE TABLE dmf_master (
 
 DROP TABLE IF EXISTS finished_drug_master;
 CREATE TABLE finished_drug_master (
-    item_seq            TEXT PRIMARY KEY,
-    norm_ingredient_key TEXT,
+    -- 한 품목이 여러 성분을 가지므로 item_seq 는 단독으로 유일하지 않다.
+    -- 로컬 SQLite 와 동일하게 (item_seq, norm_ingredient_key) 복합 기본키를 쓴다.
+    item_seq            TEXT NOT NULL,
+    norm_ingredient_key TEXT NOT NULL,
     norm_base_key       TEXT,
     product_name        TEXT,
     product_name_en     TEXT,
@@ -43,7 +45,8 @@ CREATE TABLE finished_drug_master (
     bizrno              TEXT,
     first_seen_snapshot TEXT,
     last_seen_snapshot  TEXT,
-    updated_at          TEXT
+    updated_at          TEXT,
+    PRIMARY KEY (item_seq, norm_ingredient_key)
 );
 
 DROP TABLE IF EXISTS change_history_log;
